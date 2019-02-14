@@ -1,4 +1,5 @@
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
@@ -8,15 +9,39 @@
 	<artifactId>springjdbc-helper</artifactId>
 	<version>1.0</version>
 	<packaging>jar</packaging>
-	
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<scm>
+		<url>https://github.com/ebert001/springjdbc-helper</url>
+		<connection>scm:git:git@github.com:ebert001/springjdbc-helper.git</connection>
+		<developerConnection>scm:git:git@github.com:ebert001/springjdbc-helper.git</developerConnection>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>ebo</id>
+			<name>Ebo</name>
+			<email>ebert_li@163.com</email>
+			<url>https://github.com/ebert001/springjdbc-helper</url>
+		</developer>
+	</developers>
+
+
 	<properties>
 		<project.encoding>UTF-8</project.encoding>
-		<!-- 文件拷贝时的编码 -->  
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>  
-        <!-- 编译时的编码 -->  
-        <maven.compiler.encoding>UTF-8</maven.compiler.encoding>
-		
+		<!-- 文件拷贝时的编码 -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<!-- 编译时的编码 -->
+		<maven.compiler.encoding>UTF-8</maven.compiler.encoding>
+
 		<java.version>1.8</java.version>
 
 		<junit.version>4.12</junit.version>
@@ -43,39 +68,19 @@
 			</properties>
 		</profile>
 	</profiles>
-
-	<repositories>
-		<repository>
-			<id>jboss</id>
-			<url>https://repository.jboss.org/nexus/content/repositories/releases</url>
-		</repository>
-	</repositories>
-
+	
 	<distributionManagement>
-		<repository>
-			<id>oss.sonatype.org</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-		</repository>
 		<snapshotRepository>
-			<id>oss.sonatype.org</id>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Nexus Snapshots Repository</name>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</snapshotRepository>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Nexus Release Repository</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2</url>
+		</repository>
 	</distributionManagement>
-
-	<scm>
-		<url>https://github.com/jiecao-fm/myim-spring</url>
-		<connection>scm:git:git@github.com:myim/myim.git</connection>
-		<developerConnection>scm:git:git@github.com:myim/myim-spring.git</developerConnection>
-	</scm>
-
-	<developers>
-		<developer>
-			<email>ebert_li@163.com</email>
-			<name>Ebo</name>
-			<url>https://github.com/myim</url>
-			<id>ebo</id>
-		</developer>
-	</developers>
 
 	<dependencies>
 		<dependency>
@@ -91,9 +96,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-		    <groupId>commons-beanutils</groupId>
-		    <artifactId>commons-beanutils</artifactId>
-		    <version>${beanutils.version}</version>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>${beanutils.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -132,15 +137,15 @@
 					<encoding>${project.encoding}</encoding>
 				</configuration>
 			</plugin>
-			<plugin>  
-                <groupId>org.apache.maven.plugins</groupId>  
-                <artifactId>maven-resources-plugin</artifactId>  
-                <version>2.6</version>  
-                <configuration>  
-                	<!-- 指定编码格式，否则在DOS下运行mvn命令时当发生文件资源copy时将使用系统默认使用GBK编码 -->
-                    <encoding>${project.encoding}</encoding>  
-                </configuration>  
-            </plugin> 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<!-- 指定编码格式，否则在DOS下运行mvn命令时当发生文件资源copy时将使用系统默认使用GBK编码 -->
+					<encoding>${project.encoding}</encoding>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 </project>
