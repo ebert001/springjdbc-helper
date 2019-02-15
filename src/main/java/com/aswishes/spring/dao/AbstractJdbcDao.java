@@ -51,7 +51,11 @@ public abstract class AbstractJdbcDao {
 	protected abstract void setTableName();
 
 	/**
+	 * @param <E> the class of the object
+	 * @param sql Select SQL, the result only contain one field
 	 * @param requiredType 只能是基本类型的包装类型
+	 * @param args Condition arguments
+	 * @return 基本类型的数据对象
 	 */
 	@Transactional(noRollbackFor = {EmptyResultDataAccessException.class})
 	public <E> E getObject(String sql, Class<E> requiredType, Object...args) {
@@ -467,7 +471,7 @@ public abstract class AbstractJdbcDao {
 	 * 仅适用于 数据库主键自动增长 类型的表
 	 * @param sql insert语句
 	 * @param values 值
-	 * @return
+	 * @return Database auto increment number
 	 */
 	@Transactional
 	public Long saveAndGetId(final String sql, final Object...values) {
@@ -487,7 +491,8 @@ public abstract class AbstractJdbcDao {
 
 	/**
 	 * 调用此方法前应当先查询数据库，确保对象是最新的．否则保存的数据可能出现偏差.
-	 * @param t
+	 * @param <T> Entity Object
+	 * @param t Entity object
 	 */
 	@Transactional
 	public <T> void updateByPK(T t) {
@@ -575,7 +580,7 @@ public abstract class AbstractJdbcDao {
 
 	/**
 	 * 仅适用于 数据库主键自动增长 类型的表
-	 * @param id
+	 * @param id primary key
 	 */
 	public void delete(Long id) {
 		String sql = "delete from " + tableName + " where id = ?";

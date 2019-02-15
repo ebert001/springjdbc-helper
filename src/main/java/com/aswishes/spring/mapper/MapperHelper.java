@@ -21,6 +21,9 @@ public class MapperHelper {
 
 	/**
 	 * 构建 Mapper 对象
+	 * @param <T> the class of the object
+	 * @param clazz the class which will be convert to RowMapper object.
+	 * @return RowMapper object
 	 */
 	public static <T> RowMapper<T> getMapper(Class<T> clazz) {
 		Map<String, MapperField> fmap = cache.get(clazz);
@@ -75,7 +78,6 @@ public class MapperHelper {
 
 	/**
 	 * Construct Mapper Object of given class
-	 * @param <T>
 	 */
 	public static class RsMapper<T> implements RowMapper<T> {
 		private Class<T> clazz;

@@ -47,8 +47,8 @@ public class QueryProperty {
 	}
 
 	/**
-	 * @param name S-LIKE-username
-	 * @param value
+	 * @param name property name. Such as: S-LIKE-username
+	 * @param value property value.
 	 */
 	public QueryProperty(String name, String value) {
 		String[] ss = name.split("-", 3);
@@ -90,6 +90,7 @@ public class QueryProperty {
 	
 	/**
 	 * @param param Key format: Q-S-LIKE-username
+	 * @return Restriction array
 	 */
 	public static Restriction[] convert(Map<String, String> param) {
 		return convert(param, "Q");

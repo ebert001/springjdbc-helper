@@ -51,7 +51,7 @@ public abstract class PageResultWrapper<T> {
 
     /**
      * 查询的起始索引位置
-     * @return
+     * @return 起始索引位置
      */
     public int getPageStartIndex() {
     	return this.pageStartIndex;
@@ -59,7 +59,6 @@ public abstract class PageResultWrapper<T> {
 
     /**
      * 总页数。如果总记录数为 0，页数为1.
-     * @return
      */
     public void calPageCount() {
         if (pageSize <= 0) {
@@ -102,24 +101,21 @@ public abstract class PageResultWrapper<T> {
     }
 
     /**
-     * 总记录数
-     * @return
+     * @return 总记录数
      */
     public int getTotalNo() {
         return this.totalCount;
     }
 
     /**
-     * 每页数量
-     * @return
+     * @return 每页数量
      */
     public int getPageSize() {
         return this.pageSize;
     }
 
     /**
-     * 当前页码
-     * @return
+     * @return 当前页码
      */
     public int getPageNo() {
         return this.pageNo;

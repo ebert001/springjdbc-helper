@@ -474,25 +474,6 @@ public class Restriction {
 		return sb.toString();
 	}
 
-	/**
-	 * Example:
-	 * <pre>
-     * Restriction.addEach([1, 2, 3], 'hello', true)   = ['hello1', 'hello2', 'hello3']
-     * Restriction.addEach([1, 2, 3], 'hello', false)   = ['1hello', '2hello', '3hello']
-     * </pre>
-	 * @param list
-	 * @param content
-	 * @param addBefore
-	 * @return
-	 */
-	public static List<String> addEach(List<String> list, String content, boolean addBefore) {
-		List<String> result = new ArrayList<String>();
-		for (String s : list) {
-			result.add(addBefore ? (content + s) : (s + content));
-		}
-		return result;
-	}
-
 	public static String join(String[] values, String separator, String appendLast) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < values.length - 1; i++) {

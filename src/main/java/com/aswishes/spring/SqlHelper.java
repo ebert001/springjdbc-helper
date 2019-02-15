@@ -46,6 +46,7 @@ public class SqlHelper {
 		}
 		/**
 		 * @param phrase Such as: name,age,birthday
+		 * @return insert SQL
 		 */
 		public String columns(String phrase) {
 			String[] ss = phrase.split(",");
