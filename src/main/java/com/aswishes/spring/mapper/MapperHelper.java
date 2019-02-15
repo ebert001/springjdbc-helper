@@ -61,21 +61,6 @@ public class MapperHelper {
 		return new RsMapper<T>(clazz, fmap);
 	}
 
-	private static Field[] getDeclaredFields(Class<?> clazz) {
-		Field[] result = declaredFieldsCache.get(clazz);
-		if (result != null) {
-			return result;
-		}
-		try {
-			result = clazz.getDeclaredFields();
-			declaredFieldsCache.put(clazz, (result.length == 0 ? new Field[0] : result));
-			return result;
-		} catch (Throwable ex) {
-			throw new IllegalStateException("Failed to introspect Class [" + clazz.getName() +
-					"] from ClassLoader [" + clazz.getClassLoader() + "]", ex);
-		}
-	}
-
 	/**
 	 * Construct Mapper Object of given class
 	 */
@@ -104,7 +89,10 @@ public class MapperHelper {
 		private void setValue(Object rowObj, MapperField mapperField, Object dbValue) throws SQLException {
 			String setterName = getSetterName(mapperField.field.getName());
 			try {
-				Method setterMethod = clazz.getDeclaredMethod(setterName, mapperField.field.getType());
+				Method setterMethod = getDeclaredMethod(clazz, setterName, mapperField.field.getType());
+				if (setterMethod == null) {
+					throw new NoSuchMethodException(clazz.getName() + "." + setterName);
+				}
 				Class<? extends TypeConverter> typeConverter = mapperField.typeConverter;
 				if (typeConverter == null || DefaultConverter.class.equals(typeConverter)) {
 					setterMethod.invoke(rowObj, dbValue);
@@ -134,5 +122,32 @@ public class MapperHelper {
 			this.field = field;
 			this.typeConverter = typeConvert;
 		}
+	}
+	
+	private static Field[] getDeclaredFields(Class<?> clazz) {
+		Field[] result = declaredFieldsCache.get(clazz);
+		if (result != null) {
+			return result;
+		}
+		try {
+			result = clazz.getDeclaredFields();
+			declaredFieldsCache.put(clazz, (result.length == 0 ? new Field[0] : result));
+			return result;
+		} catch (Throwable ex) {
+			throw new IllegalStateException("Failed to introspect Class [" + clazz.getName() +
+					"] from ClassLoader [" + clazz.getClassLoader() + "]", ex);
+		}
+	}
+	
+	private static Method getDeclaredMethod(Class<?> clazz, String name, Class<?>...parameterTypes) {
+		Class<?> targetClass = clazz;
+		do {
+			try {
+				return targetClass.getDeclaredMethod(name, parameterTypes);
+			} catch (NoSuchMethodException e) {
+				targetClass = targetClass.getSuperclass();
+			}
+		} while (targetClass != null && targetClass != Object.class);
+		return null;
 	}
 }

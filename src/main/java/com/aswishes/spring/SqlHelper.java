@@ -186,7 +186,7 @@ public class SqlHelper {
 		public Update set(String... columns) {
 			return set(Arrays.asList(columns));
 		}
-		public Update set(String phrase) {
+		public Update setPhrase(String phrase) {
 			sql.append(phrase).append(" ");
 			return this;
 		}
@@ -200,7 +200,7 @@ public class SqlHelper {
 		public String where(String... columns) {
 			return where(Arrays.asList(columns));
 		}
-		public String where(String where) {
+		public String wherePhrase(String where) {
 			if (where == null || "".equals(where.trim())) {
 				return sql.append(" ").toString();
 			}
