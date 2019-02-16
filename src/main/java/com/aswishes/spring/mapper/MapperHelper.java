@@ -3,8 +3,11 @@ package com.aswishes.spring.mapper;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -79,8 +82,17 @@ public class MapperHelper {
 			} catch (Exception e) {
 				throw new SQLException("construct result object error", e);
 			}
+			ResultSetMetaData metaData = rs.getMetaData();
+			int columnCount = metaData.getColumnCount();
+			List<String> columnNames = new ArrayList<String>();
+			for (int i = 1; i <= columnCount; i++) {
+				columnNames.add(metaData.getColumnName(i));
+			}
 			for (Entry<String, MapperField> entry : fieldMap.entrySet()) {
 				String column = entry.getKey();
+				if (!columnNames.contains(column)) {
+					continue;
+				}
 				MapperField mapperField = entry.getValue();
 				setValue(rowObj, mapperField, rs.getObject(column));
 			}
