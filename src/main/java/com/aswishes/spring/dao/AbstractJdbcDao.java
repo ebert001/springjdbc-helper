@@ -528,7 +528,7 @@ public abstract class AbstractJdbcDao {
 				values.add(ReflectionUtils.getField(field, t));
 			}
 		});
-		String sql = Update.table(getTableName(t, tableName)).set(columns).where(pkColumns);
+		String sql = Update.table(getTableName(t, tableName)).setColumns(columns).whereColumns(pkColumns);
 		values.addAll(pkValues);
 		jdbcTemplate.update(sql, values.toArray());
 	}
@@ -538,7 +538,7 @@ public abstract class AbstractJdbcDao {
 	}
 
 	public void update(Columns columns, Restriction...restrictions) {
-		String sql = Update.table(tableName).set(columns.getSetPhrase()).where(Restriction.whereSql(restrictions));
+		String sql = Update.table(tableName).set(columns.getSetPhrase()).whereColumns(Restriction.whereSql(restrictions));
 		List<Object> values = columns.getSetValues();
 		values.addAll(Restriction.whereValueList(restrictions));
 		jdbcTemplate.update(sql, values.toArray());
@@ -574,7 +574,7 @@ public abstract class AbstractJdbcDao {
 				}
 			}
 		});
-		String sql = Delete.table(getTableName(t, tableName)).where(pkColumns);
+		String sql = Delete.table(getTableName(t, tableName)).whereColumns(pkColumns);
 		jdbcTemplate.update(sql, pkValues.toArray());
 	}
 

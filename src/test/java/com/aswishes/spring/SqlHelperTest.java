@@ -54,7 +54,7 @@ public class SqlHelperTest {
 				SqlHelper.delete("m_user").where("id = ?"));
 
 		assertEquals("delete from m_user ",
-				SqlHelper.delete("m_user").where());
+				SqlHelper.delete("m_user").whereColumns());
 
 	}
 

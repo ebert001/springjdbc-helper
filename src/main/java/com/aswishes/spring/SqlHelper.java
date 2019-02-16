@@ -41,12 +41,18 @@ public class SqlHelper {
 			sql.append(")");
 			return sql.toString();
 		}
+		/**
+		 * 指定insert语句需要插入的字段名称列表
+		 * @param columns 字段名称列表．如：["name", "age", "birthday"]
+		 * @return 最终sql语句
+		 */
 		public String columns(String... columns) {
 			return columns(Arrays.asList(columns));
 		}
 		/**
-		 * @param phrase Such as: name,age,birthday
-		 * @return insert SQL
+		 * 指定insert语句需要插入的字段名称列表
+		 * @param phrase 字段名称列表．如： "name,age,birthday"
+		 * @return 最终sql语句
 		 */
 		public String columns(String phrase) {
 			String[] ss = phrase.split(",");
@@ -63,21 +69,34 @@ public class SqlHelper {
 			sql.append(tableName).append(" ");
 			return this;
 		}
-		public String where(List<String> columns) {
+		public String whereColumns(List<String> columns) {
 			if (columns == null || columns.size() < 1) {
 				return sql.toString();
 			}
 			sql.append("where ").append(Restriction.join(columns, " = ? and ", " = ?"));
 			return sql.toString();
 		}
-		public String where(String... columns) {
-			return where(Arrays.asList(columns));
+		/**
+		 * 设置delete语句的where条件．只需设置条件列名称
+		 * @param columns 条件列名称．如："name", "age", "birthday"
+		 * @return 最终sql语句
+		 */
+		public String whereColumns(String... columns) {
+			return whereColumns(Arrays.asList(columns));
 		}
+		/**
+		 * 设置delete语句的where条件．该方法会自动添加where关键字，并附加空格
+		 * @param where 条件语句．如：name = ? and sex = ? and birthday = ?
+		 * @return 最终的delete语句
+		 */
 		public String where(String where) {
 			if (where == null || "".equals(where.trim())) {
 				return sql.toString();
 			}
 			sql.append("where ").append(where);
+			return sql.toString();
+		}
+		public String toSqlString() {
 			return sql.toString();
 		}
 	}
@@ -98,10 +117,20 @@ public class SqlHelper {
 			this.countColumns = columns;
 			return this;
 		}
+		/**
+		 * 设置select语句的输出结果列．
+		 * @param columns 输出结果列表．如："name, age, birthday"
+		 * @return Select对象
+		 */
 		public Select columns(String columns) {
 			this.columns = columns;
 			return this;
 		}
+		/**
+		 * 设置select语句的输出结果列．
+		 * @param columns 输出结果列表．如：["name", "age", "birthday"]
+		 * @return Select对象
+		 */
 		public Select columns(String... columns) {
 			this.columns = Restriction.join(Arrays.asList(columns), ",");
 			return this;
@@ -126,7 +155,12 @@ public class SqlHelper {
 			if (restrictions == null || restrictions.length < 1) {
 				return this;
 			}
-			sql.append("where ").append(Restriction.whereSql(restrictions));
+			String str = Restriction.whereSql(restrictions);
+			if (str.startsWith("order by")) {
+				sql.append(str);
+			} else {
+				sql.append("where ").append(str);
+			}
 			return this;
 		}
 		public Select where(String phrase) {
@@ -176,31 +210,61 @@ public class SqlHelper {
 			update.sql.append(tableName).append(" ").append("set ");
 			return update;
 		}
-		public Update set(List<String> columnList) {
-			if (columnList == null || columnList.size() < 1) {
+		/**
+		 * 设置update语句中需要更新的列
+		 * @param columns 列名称．不需要带问号.如：["name", "age", "sex"]
+		 * @return 当前Update语句对象
+		 */
+		public Update setColumns(List<String> columns) {
+			if (columns == null || columns.size() < 1) {
 				throw new IllegalStateException("Column list can not be empty.");
 			}
-			sql.append(Restriction.join(columnList, " = ?, ", " = ? "));
+			sql.append(Restriction.join(columns, " = ?, ", " = ? "));
 			return this;
 		}
-		public Update set(String... columns) {
-			return set(Arrays.asList(columns));
+		/**
+		 * 设置update语句中需要更新的列
+		 * @param columns 列名称．不需要带问号.如：["name", "age", "sex"]
+		 * @return 当前Update语句对象
+		 */
+		public Update setColumns(String... columns) {
+			return setColumns(Arrays.asList(columns));
 		}
-		public Update setPhrase(String phrase) {
+		/**
+		 * 设置update语句中需要更新的列
+		 * @param phrase 拼写的列语句．如："name = ?, age = ?, birthday = ?"
+		 * @return 当前Update语句对象
+		 */
+		public Update set(String phrase) {
 			sql.append(phrase).append(" ");
 			return this;
 		}
-		public String where(List<String> columnList) {
-			if (columnList == null || columnList.size() < 1) {
+		/**
+		 * 设置update语句中条件列
+		 * @param columns 条件列名称．不需要带问号.如：["name", "age", "sex"]
+		 * @return 最终sql语句
+		 */
+		public String whereColumns(List<String> columns) {
+			if (columns == null || columns.size() < 1) {
 				throw new IllegalStateException("Column list can not be empty.");
 			}
-			sql.append("where ").append(Restriction.join(columnList, " = ? and ", " = ?"));
+			sql.append("where ").append(Restriction.join(columns, " = ? and ", " = ?"));
 			return sql.toString();
 		}
-		public String where(String... columns) {
-			return where(Arrays.asList(columns));
+		/**
+		 * 设置update语句中条件列
+		 * @param columns 条件列名称．不需要带问号.如：["name", "age", "sex"]
+		 * @return 最终sql语句
+		 */
+		public String whereColumns(String... columns) {
+			return whereColumns(Arrays.asList(columns));
 		}
-		public String wherePhrase(String where) {
+		/**
+		 * 设置条件语句．若条件语句不为空，该方法会自动产生一个where前缀
+		 * @param where 条件语句．如："name = ? and age = ? and sex = ?"
+		 * @return 最终sql语句
+		 */
+		public String where(String where) {
 			if (where == null || "".equals(where.trim())) {
 				return sql.append(" ").toString();
 			}
@@ -226,6 +290,10 @@ public class SqlHelper {
 			return this;
 		}
 
+		/**
+		 * 获取set短语
+		 * @return set部分语句．如: name = ?, age = ?
+		 */
 		public String getSetPhrase() {
 			return sets.toString();
 		}

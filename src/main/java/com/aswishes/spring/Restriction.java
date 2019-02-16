@@ -400,7 +400,7 @@ public class Restriction {
 		if ("".equals(restrictionSql.trim())) {
 			return restrictionSql;
 		}
-		if (restrictionSql.startsWith("order")) { // 不需要前缀 where
+		if (restrictionSql.startsWith("order by")) { // 不需要前缀 where
 			return restrictionSql;
 		}
 		return restrictionSql;
