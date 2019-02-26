@@ -38,12 +38,12 @@ public abstract class AbstractService {
 		return dao.getList(MapperHelper.getMapper(bean), restrictions);
 	}
 
-	public <T> List<T> getList(Class<T> bean, int startIndex, int pageSize) {
-		return dao.getList(MapperHelper.getMapper(bean), startIndex, pageSize);
+	public <T> List<T> getList(Class<T> bean, int pageNo, int pageSize) {
+		return dao.getList(MapperHelper.getMapper(bean), pageNo, pageSize);
 	}
 
-	public <T> List<T> getList(Class<T> bean, int startIndex, int pageSize, Restriction...restrictions) {
-		return dao.getList(MapperHelper.getMapper(bean), startIndex, pageSize, restrictions);
+	public <T> List<T> getList(Class<T> bean, int pageNo, int pageSize, Restriction...restrictions) {
+		return dao.getList(MapperHelper.getMapper(bean), pageNo, pageSize, restrictions);
 	}
 
 	public PageResultWrapper<Map<String, Object>> getPage(final int pageNo, final int pageSize) {
