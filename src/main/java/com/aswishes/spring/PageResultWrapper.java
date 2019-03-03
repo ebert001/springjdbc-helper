@@ -103,7 +103,7 @@ public abstract class PageResultWrapper<T> {
     /**
      * @return 总记录数
      */
-    public int getTotalNo() {
+    public int getTotalCount() {
         return this.totalCount;
     }
 
