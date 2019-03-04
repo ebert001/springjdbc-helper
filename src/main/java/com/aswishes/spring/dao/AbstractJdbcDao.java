@@ -495,7 +495,7 @@ public abstract class AbstractJdbcDao {
 	 * @param t Entity object
 	 */
 	@Transactional
-	public <T> void updateByPK(T t) {
+	public <T> void updateByPK(T t, boolean ignoreNull) {
 		List<Object> values = new ArrayList<Object>();
 		List<String> columns = new ArrayList<String>();
 		List<Object> pkValues = new ArrayList<Object>();
@@ -519,13 +519,17 @@ public abstract class AbstractJdbcDao {
 				if (!field.isAccessible() ) {
 					field.setAccessible(true);
 				}
+				Object v = ReflectionUtils.getField(field, t);
+				if (ignoreNull && v == null) {
+					return;
+				}
 				if (StringUtils.contain(pks, name)) {
 					pkColumns.add(name);
-					pkValues.add(ReflectionUtils.getField(field, t));
+					pkValues.add(v);
 					return;
 				}
 				columns.add(name);
-				values.add(ReflectionUtils.getField(field, t));
+				values.add(v);
 			}
 		});
 		String sql = Update.table(getTableName(t, tableName)).setColumns(columns).whereColumns(pkColumns);
