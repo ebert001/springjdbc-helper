@@ -333,7 +333,8 @@ public abstract class AbstractJdbcDao {
 
 	@Transactional
 	public int getCount(String sql, Object...args) {
-		return jdbcTemplate.queryForObject(sql, Integer.class, args);
+		Integer result = jdbcTemplate.queryForObject(sql, Integer.class, args);
+		return result == null ? 0 : result.intValue();
 	}
 
 	@Transactional
