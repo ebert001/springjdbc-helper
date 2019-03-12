@@ -106,7 +106,8 @@ public abstract class AbstractJdbcDao {
 	@Transactional
 	public int getCount() {
 		String sql = SqlHelper.select(tableName).count("*").where("").toCountString();
-		return jdbcTemplate.queryForObject(sql, Integer.class);
+		Integer result = jdbcTemplate.queryForObject(sql, Integer.class);
+		return result == null ? 0 : result.intValue();
 	}
 
 	@Transactional
@@ -124,7 +125,8 @@ public abstract class AbstractJdbcDao {
 	@Transactional
 	public int getCount(Restriction...restrictions) {
 		String sql = SqlHelper.select(tableName).count("*").where(restrictions).toCountString();
-		return jdbcTemplate.queryForObject(sql, Integer.class, Restriction.whereValueArray(restrictions));
+		Integer result = jdbcTemplate.queryForObject(sql, Integer.class, Restriction.whereValueArray(restrictions));
+		return result == null ? 0 : result;
 	}
 
 	@Transactional
