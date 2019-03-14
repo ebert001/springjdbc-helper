@@ -156,6 +156,9 @@ public class SqlHelper {
 				return this;
 			}
 			String str = Restriction.whereSql(restrictions);
+			if (str == null || str.trim().length() < 1) {
+				return this;
+			}
 			if (str.startsWith("order by")) {
 				sql.append(str);
 			} else {
