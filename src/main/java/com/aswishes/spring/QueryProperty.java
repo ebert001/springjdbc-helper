@@ -68,8 +68,8 @@ public class QueryProperty {
 		return new Restriction(propertyName, matchType.getName(), propertyValue);
 	}
 
-	public static Restriction[] convert(Map<String, String> param, String prefix) {
-		List<Restriction> list = new ArrayList<Restriction>();
+	public static List<QueryProperty> toQueryProperty(Map<String, String> param, String prefix) {
+		List<QueryProperty> list = new ArrayList<QueryProperty>();
 		for (Map.Entry<String, String> entry : param.entrySet()) {
 			String name = entry.getKey();
 			if (!name.startsWith(prefix)) {
@@ -83,17 +83,24 @@ public class QueryProperty {
 				continue;
 			}
 			String pname = name.substring(name.indexOf("-") + 1);
-			list.add(new QueryProperty(pname, value).toRestriction());
+			list.add(new QueryProperty(pname, value));
 		}
-		return list.toArray(new Restriction[list.size()]);
+		return list;
 	}
 	
-	/**
-	 * @param param Key format: Q-S-LIKE-username
-	 * @return Restriction array
-	 */
-	public static Restriction[] convert(Map<String, String> param) {
-		return convert(param, "Q");
+	public static List<QueryProperty> toQueryProperty(Map<String, String> param) {
+		return toQueryProperty(param, "Q");
 	}
-
+	
+	public static Restriction[] toRestrictions(List<QueryProperty> list) {
+		Restriction[] arr = new Restriction[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			arr[i] = list.get(i).toRestriction();
+		}
+		return arr;
+	}
+	
+	public static Restriction[] toRestrictions(Map<String, String> param) {
+		return toRestrictions(toQueryProperty(param));
+	}
 }
