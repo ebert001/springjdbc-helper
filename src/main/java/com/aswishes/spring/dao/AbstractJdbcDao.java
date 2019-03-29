@@ -32,6 +32,7 @@ import com.aswishes.spring.SqlHelper.Insert;
 import com.aswishes.spring.SqlHelper.Update;
 import com.aswishes.spring.exception.RDbException;
 import com.aswishes.spring.mapper.Mapper;
+import com.aswishes.spring.mapper.MapperHelper.RsMapper;
 
 @Transactional
 public abstract class AbstractJdbcDao {
@@ -594,14 +595,22 @@ public abstract class AbstractJdbcDao {
 		jdbcTemplate.update(sql, id);
 	}
 
-	private String getTableName(Object mapper, String tableName) {
-		Mapper tmapper = mapper.getClass().getAnnotation(Mapper.class);
-		if (tmapper == null) {
+	private String getTableName(Object mapperObj, String tableName) {
+		if (mapperObj instanceof RsMapper) {
+			Mapper tmapper = ((RsMapper<?>) mapperObj).getMapper();
+			return getTableName(tmapper, tableName);
+		}
+		Mapper tmapper = mapperObj.getClass().getAnnotation(Mapper.class);
+		return getTableName(tmapper, tableName);
+	}
+	
+	private String getTableName(Mapper mapper, String tableName) {
+		if (mapper == null) {
 			return tableName;
 		}
-		if (StringUtils.isNotBlank(tmapper.tableName())) {
-			return tmapper.tableName().trim();
+		if (StringUtils.isNotBlank(mapper.tableName())) {
+			return mapper.tableName().trim();
 		}
 		return tableName;
-	}
+	} 
 }

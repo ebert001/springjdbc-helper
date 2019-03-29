@@ -125,6 +125,9 @@ public class MapperHelper {
 			arr[0] = Character.toUpperCase(arr[0]);
 			return "set" + new String(arr);
 		}
+		public Mapper getMapper() {
+			return clazz.getAnnotation(Mapper.class);
+		}
 	}
 
 	private static class MapperField {
