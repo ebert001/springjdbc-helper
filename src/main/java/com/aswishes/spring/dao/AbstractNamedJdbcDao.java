@@ -12,7 +12,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.aswishes.spring.PageResultWrapper;
+import com.aswishes.spring.PageResult;
 
 @Transactional
 public abstract class AbstractNamedJdbcDao extends AbstractJdbcDao {
@@ -64,14 +64,14 @@ public abstract class AbstractNamedJdbcDao extends AbstractJdbcDao {
 		return namedParameterJdbcTemplate.query(sql, param, mapper);
 	}
 
-	public <E> PageResultWrapper<E> namedQueryPage(final String countSql, final String dataSql, final Map<String, ?> param, final RowMapper<E> mapper, int pageNo, int pageSize) {
-		PageResultWrapper<E> wrapper = new PageResultWrapper<E>(pageNo, pageSize) {
+	public <E> PageResult<E> namedQueryPage(final String countSql, final String dataSql, final Map<String, ?> param, final RowMapper<E> mapper, int pageNo, int pageSize) {
+		PageResult<E> wrapper = new PageResult<E>(pageNo, pageSize) {
 			@Override
 			public int queryCount() throws Exception {
 				return namedQueryInt(countSql, param);
 			}
 			@Override
-			public List<E> query(int pageStartIndex, int pageNo, int pageSize) throws Exception {
+			public List<E> query(int startIndex, int pageNo, int pageSize) throws Exception {
 				return namedQueryList(dataSql, param, mapper, pageNo, pageSize);
 			}
 		};
@@ -88,15 +88,15 @@ public abstract class AbstractNamedJdbcDao extends AbstractJdbcDao {
 		return namedParameterJdbcTemplate.queryForList(sql, param);
 	}
 
-	public PageResultWrapper<Map<String, Object>> namedQueryPage(final String countSql, final String dataSql, final Map<String, ?> param, int pageNo, int pageSize) {
-		PageResultWrapper<Map<String, Object>> wrapper = new PageResultWrapper<Map<String, Object>>(pageNo, pageSize) {
+	public PageResult<Map<String, Object>> namedQueryPage(final String countSql, final String dataSql, final Map<String, ?> param, int pageNo, int pageSize) {
+		PageResult<Map<String, Object>> wrapper = new PageResult<Map<String, Object>>(pageNo, pageSize) {
 			@Override
 			public int queryCount() throws Exception {
 				return namedQueryInt(countSql, param);
 			}
 			@Override
-			public List<Map<String, Object>> query(int pageStartIndex, int pageNo, int pageSize) throws Exception {
-				return namedQueryList(dataSql, param, pageStartIndex, pageSize);
+			public List<Map<String, Object>> query(int startIndex, int pageNo, int pageSize) throws Exception {
+				return namedQueryList(dataSql, param, startIndex, pageSize);
 			}
 		};
 		try {

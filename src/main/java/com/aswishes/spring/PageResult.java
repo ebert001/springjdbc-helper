@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * 分页包装器
  */
-public abstract class PageResultWrapper<T> {
+public abstract class PageResult<T> {
     /** 页码 */
     private int pageNo = 0;
     /** 每页数量 */
@@ -17,19 +17,19 @@ public abstract class PageResultWrapper<T> {
     /** 下一页 */
     private int nextNo;
     /** 上一页 */
-    private int preNo;
+    private int prevNo;
     /** 分页数据 */
-    private List<T> pageResult;
+    private List<T> result;
     /** 分页数据的起始索引位置 */
-    private int pageStartIndex = 0;
+    private int startIndex = 0;
 
-    public PageResultWrapper() {}
+    public PageResult() {}
 
-    public PageResultWrapper(int pageSize) {
+    public PageResult(int pageSize) {
         this.pageSize = pageSize;
     }
 
-    public PageResultWrapper(int pageNo, int pageSize) {
+    public PageResult(int pageNo, int pageSize) {
     	this.pageNo = pageNo;
     	this.pageSize = pageSize;
     }
@@ -37,24 +37,24 @@ public abstract class PageResultWrapper<T> {
     public List<T> paging() throws Exception {
         this.totalCount = queryCount();
         calPageCount();
-        this.pageStartIndex = (pageNo - 1) * pageSize;
+        this.startIndex = (pageNo - 1) * pageSize;
         if (this.totalCount < 1) {
         	return null;
         }
-        pageResult = query(pageStartIndex, pageNo, pageSize);
-        return pageResult;
+        result = query(startIndex, pageNo, pageSize);
+        return result;
     }
 
     public abstract int queryCount() throws Exception;
 
-    public abstract List<T> query(int pageStartIndex, int pageNo, int pageSize) throws Exception;
+    public abstract List<T> query(int startIndex, int pageNo, int pageSize) throws Exception;
 
     /**
      * 查询的起始索引位置
      * @return 起始索引位置
      */
-    public int getPageStartIndex() {
-    	return this.pageStartIndex;
+    public int getStartIndex() {
+    	return this.startIndex;
     }
 
     /**
@@ -82,9 +82,9 @@ public abstract class PageResultWrapper<T> {
         if (nextNo > pageCount) {
         	nextNo = pageCount;
         }
-        preNo = pageNo - 1;
-        if (preNo < 1) {
-        	preNo = 1;
+        prevNo = pageNo - 1;
+        if (prevNo < 1) {
+        	prevNo = 1;
         }
     }
 
@@ -92,12 +92,12 @@ public abstract class PageResultWrapper<T> {
 		return pageCount;
 	}
 
-    public List<T> getPageResult() {
-    	return this.pageResult;
+    public List<T> getResult() {
+    	return this.result;
     }
 
-    public void setPageResult(List<T> list) {
-    	this.pageResult = list;
+    public void setResult(List<T> list) {
+    	this.result = list;
     }
 
     /**
@@ -121,8 +121,8 @@ public abstract class PageResultWrapper<T> {
         return this.pageNo;
     }
 
-    public int getPreNo() {
-    	return this.preNo;
+    public int getPrevNo() {
+    	return this.prevNo;
     }
 
     public int getNextNo() {
