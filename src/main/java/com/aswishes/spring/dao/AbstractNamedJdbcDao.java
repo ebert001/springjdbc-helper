@@ -85,6 +85,9 @@ public abstract class AbstractNamedJdbcDao extends AbstractJdbcDao {
 
 	public List<Map<String, Object>> namedQueryList(String sql, Map<String, ?> param, int pageNo, int pageSize) {
 		sql += getLimitSql(pageNo, pageSize);
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		return namedParameterJdbcTemplate.queryForList(sql, param);
 	}
 

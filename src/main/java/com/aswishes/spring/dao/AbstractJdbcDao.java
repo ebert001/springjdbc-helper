@@ -39,6 +39,7 @@ public abstract class AbstractJdbcDao {
 	protected static final Logger logger = LoggerFactory.getLogger(AbstractJdbcDao.class);
 	protected JdbcTemplate jdbcTemplate;
 	protected String tableName;
+	protected boolean showSql = false;
 
 	public AbstractJdbcDao() {
 		setTableName();
@@ -97,6 +98,9 @@ public abstract class AbstractJdbcDao {
 	@Transactional(noRollbackFor = {EmptyResultDataAccessException.class})
 	public <E> E getObjectBy(RowMapper<E> mapper, Restriction...restrictions) {
 		String sql = SqlHelper.select(getTableName(mapper, tableName)).columns("*").where(restrictions).toSqlString();
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		try {
 			return jdbcTemplate.queryForObject(sql, mapper, Restriction.whereValueArray(restrictions));
 		} catch (EmptyResultDataAccessException e) {
@@ -107,6 +111,9 @@ public abstract class AbstractJdbcDao {
 	@Transactional
 	public int getCount() {
 		String sql = SqlHelper.select(tableName).count("*").where("").toCountString();
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		Integer result = jdbcTemplate.queryForObject(sql, Integer.class);
 		return result == null ? 0 : result.intValue();
 	}
@@ -114,18 +121,27 @@ public abstract class AbstractJdbcDao {
 	@Transactional
 	public <E> List<E> getList(RowMapper<E> mapper) {
 		String sql = SqlHelper.select(getTableName(mapper, tableName)).columns("*").where("").toSqlString();
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		return jdbcTemplate.query(sql, mapper);
 	}
 
 	@Transactional
 	public List<Map<String, Object>> getList() {
 		String sql = SqlHelper.select(tableName).columns("*").where("").toSqlString();
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		return jdbcTemplate.queryForList(sql);
 	}
 
 	@Transactional
 	public int getCount(Restriction...restrictions) {
 		String sql = SqlHelper.select(tableName).count("*").where(restrictions).toCountString();
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		Integer result = jdbcTemplate.queryForObject(sql, Integer.class, Restriction.whereValueArray(restrictions));
 		return result == null ? 0 : result;
 	}
@@ -133,6 +149,9 @@ public abstract class AbstractJdbcDao {
 	@Transactional
 	public <E> List<E> getList(RowMapper<E> mapper, Restriction...restrictions) {
 		String sql = SqlHelper.select(getTableName(mapper, tableName)).columns("*").where(restrictions).toSqlString();
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		return jdbcTemplate.query(sql, mapper, Restriction.whereValueArray(restrictions));
 	}
 
@@ -146,6 +165,9 @@ public abstract class AbstractJdbcDao {
 	public <E> List<E> getList(RowMapper<E> mapper, int pageNo, int pageSize) {
 		String sql = SqlHelper.select(getTableName(mapper, tableName)).columns("*").where().toSqlString();
 		sql += getLimitSql(pageNo, pageSize);
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		return jdbcTemplate.query(sql, mapper);
 	}
 
@@ -153,6 +175,9 @@ public abstract class AbstractJdbcDao {
 	public List<Map<String, Object>> getList(int pageNo, int pageSize) {
 		String sql = SqlHelper.select(tableName).columns("*").where().toSqlString();
 		sql += getLimitSql(pageNo, pageSize);
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		return jdbcTemplate.queryForList(sql);
 	}
 
@@ -160,6 +185,9 @@ public abstract class AbstractJdbcDao {
 	public <E> List<E> getList(RowMapper<E> mapper, int pageNo, int pageSize, Restriction...restrictions) {
 		String sql = SqlHelper.select(getTableName(mapper, tableName)).columns("*").where(restrictions).toSqlString();
 		sql += getLimitSql(pageNo, pageSize);
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		return jdbcTemplate.query(sql, mapper, Restriction.whereValueArray(restrictions));
 	}
 
@@ -167,6 +195,9 @@ public abstract class AbstractJdbcDao {
 	public List<Map<String, Object>> getList(int pageNo, int pageSize, Restriction...restrictions) {
 		String sql = SqlHelper.select(tableName).columns("*").where(restrictions).toSqlString();
 		sql += getLimitSql(pageNo, pageSize);
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		return jdbcTemplate.queryForList(sql, Restriction.whereValueArray(restrictions));
 	}
 
@@ -277,6 +308,9 @@ public abstract class AbstractJdbcDao {
 	@Transactional
 	public <E> List<E> getList(String sql, RowMapper<E> bean, int pageNo, int pageSize, Restriction...restrictions) {
 		sql += getLimitSql(pageNo, pageSize);
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		if (restrictions == null || restrictions.length < 1) {
 			return jdbcTemplate.query(sql, bean);
 		}
@@ -286,6 +320,9 @@ public abstract class AbstractJdbcDao {
 	@Transactional
 	public List<Map<String, Object>> getList(String sql, int pageNo, int pageSize, Restriction...restrictions) {
 		sql += getLimitSql(pageNo, pageSize);
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		if (restrictions == null || restrictions.length < 1) {
 			return jdbcTemplate.queryForList(sql);
 		}
@@ -351,12 +388,18 @@ public abstract class AbstractJdbcDao {
 	@Transactional
 	public <E> List<E> getList(String sql, RowMapper<E> bean, int pageNo, int pageSize, Object...args) {
 		sql += getLimitSql(pageNo, pageSize);
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		return jdbcTemplate.query(sql, bean, args);
 	}
 
 	@Transactional
 	public List<Map<String, Object>> getList(String sql, int pageNo, int pageSize, Object...args) {
 		sql += getLimitSql(pageNo, pageSize);
+		if (showSql) {
+			logger.debug("Select SQL: {}", sql);
+		}
 		return jdbcTemplate.queryForList(sql, args);
 	}
 
@@ -409,7 +452,11 @@ public abstract class AbstractJdbcDao {
 	}
 
 	public void delete(Restriction...restrictions) {
-		jdbcTemplate.update(SqlHelper.delete(tableName).where(Restriction.whereSql(restrictions)), Restriction.whereValueArray(restrictions));
+		String sql = SqlHelper.delete(tableName).where(Restriction.whereSql(restrictions));
+		if (showSql) {
+			logger.debug("Delete SQL: {}", sql);
+		}
+		jdbcTemplate.update(sql, Restriction.whereValueArray(restrictions));
 	}
 
 	public <T> void save(T t) {
@@ -438,6 +485,9 @@ public abstract class AbstractJdbcDao {
 			}
 		});
 		String sql = Insert.table(getTableName(t, tableName)).columns(columns);
+		if (showSql) {
+			logger.debug("Insert SQL: {}", sql);
+		}
 		jdbcTemplate.update(sql, values.toArray());
 	}
 
@@ -468,6 +518,9 @@ public abstract class AbstractJdbcDao {
 			}
 		});
 		String sql = Insert.table(getTableName(t, tableName)).columns(columns);
+		if (showSql) {
+			logger.debug("Insert SQL: {}", sql);
+		}
 		return saveAndGetId(sql, values.toArray());
 	}
 
@@ -538,6 +591,9 @@ public abstract class AbstractJdbcDao {
 		});
 		String sql = Update.table(getTableName(t, tableName)).setColumns(columns).whereColumns(pkColumns);
 		values.addAll(pkValues);
+		if (showSql) {
+			logger.debug("Update SQL: {}", sql);
+		}
 		jdbcTemplate.update(sql, values.toArray());
 	}
 
@@ -549,6 +605,9 @@ public abstract class AbstractJdbcDao {
 		String sql = Update.table(tableName).set(columns.getSetPhrase()).whereColumns(Restriction.whereSql(restrictions));
 		List<Object> values = columns.getSetValues();
 		values.addAll(Restriction.whereValueList(restrictions));
+		if (showSql) {
+			logger.debug("Update SQL: {}", sql);
+		}
 		jdbcTemplate.update(sql, values.toArray());
 	}
 
@@ -583,6 +642,9 @@ public abstract class AbstractJdbcDao {
 			}
 		});
 		String sql = Delete.table(getTableName(t, tableName)).whereColumns(pkColumns);
+		if (showSql) {
+			logger.debug("Update SQL: {}", sql);
+		}
 		jdbcTemplate.update(sql, pkValues.toArray());
 	}
 
@@ -592,6 +654,9 @@ public abstract class AbstractJdbcDao {
 	 */
 	public void delete(Long id) {
 		String sql = "delete from " + tableName + " where id = ?";
+		if (showSql) {
+			logger.debug("Delete SQL: {}", sql);
+		}
 		jdbcTemplate.update(sql, id);
 	}
 
