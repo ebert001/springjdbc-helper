@@ -117,7 +117,7 @@ public class Restriction {
 	}
 
 	public static Restriction eq(String fieldName, Object value) {
-		return new Restriction(fieldName, EQ, value);
+		return new Restriction(EQ, fieldName, value);
 	}
 
 	public static Restriction eq(boolean matched, String fieldName, Object value) {
