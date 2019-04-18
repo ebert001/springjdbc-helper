@@ -1,6 +1,7 @@
 package com.aswishes.spring;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class StringUtils {
@@ -27,8 +28,39 @@ public class StringUtils {
 		return false;
 	}
 	
-	public static boolean isNotBlank(String s) {
-		return !isBlank(s);
+	public static String toString(Object obj) {
+		if (obj == null) {
+			return "";
+		}
+		return obj.toString();
+	}
+	
+	public static <T> T isTrue(boolean condition, T trueValue, T falseValue) {
+		return condition ? trueValue : falseValue;
+	}
+	
+	public static <T> T isNull(Object obj, T trueValue, T falseValue) {
+		return isTrue(obj == null, trueValue, falseValue);
+	}
+	
+	public static boolean isEmpty(Collection<?> collection) {
+		return collection == null || collection.size() < 1;
+	}
+	
+	public static <T> boolean isEmpty(T[] array) {
+		return array == null || array.length < 1;
+	}
+	
+	public static boolean isNotNull(Object value) {
+		return value != null;
+	}
+	
+	public static boolean isNotEmpty(Object value) {
+		return value != null && String.valueOf(value).length() > 0;
+	}
+	
+	public static boolean isNotBlank(Object value) {
+		return value != null && String.valueOf(value).trim().length() > 0;
 	}
 	
 	/**
