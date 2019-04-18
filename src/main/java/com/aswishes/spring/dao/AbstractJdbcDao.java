@@ -596,6 +596,14 @@ public abstract class AbstractJdbcDao {
 		}
 		jdbcTemplate.update(sql, values.toArray());
 	}
+	
+	/**
+	 * Don't ignore null. Before doing update, please get the entity from database.
+	 */
+	@Transactional
+	public <T> void updateByPK(T t) {
+		updateByPK(t, false);
+	}
 
 	public void update(String sql, Object...values) {
 		jdbcTemplate.update(sql, values);
