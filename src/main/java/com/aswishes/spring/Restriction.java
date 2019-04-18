@@ -45,8 +45,6 @@ public class Restriction {
 	public static final String ORDER_DESC = "desc";
 
 	private String fieldName;
-	/** order 会使用到 */
-	private List<String> fieldNames = new ArrayList<String>();
 	/** 属性值 */
 	private Object value;
 	/** between, in, not in会使用到 */
@@ -61,72 +59,61 @@ public class Restriction {
 	public Restriction() {
 	}
 
-	public Restriction(String fieldName, String type) {
-		this.fieldName = fieldName;
+	public Restriction(String type, String fieldName) {
 		this.type = type.toLowerCase();
+		this.fieldName = fieldName;
 	}
 
-	public Restriction(boolean matched, String fieldName, String type) {
-		this(fieldName, type);
+	public Restriction(boolean matched, String type, String fieldName) {
+		this(type, fieldName);
 		this.matched = matched;
 	}
 
-	public Restriction(String fieldName, String type, Object value) {
-		this(fieldName, type);
+	public Restriction(String type, String fieldName, Object value) {
+		this(type, fieldName);
 		this.value = value;
 	}
 
-	public Restriction(boolean matched, String fieldName, String type, Object value) {
-		this(fieldName, type, value);
+	public Restriction(boolean matched, String type, String fieldName, Object value) {
+		this(type, fieldName, value);
 		this.matched = matched;
 	}
 
 	// between 和 in 使用
-	public Restriction(String fieldName, String type, List<? extends Object> values) {
-		this(fieldName, type);
+	public Restriction(String type, String fieldName, List<? extends Object> values) {
+		this(type, fieldName);
 		this.values.addAll(values);
 	}
 
-	public Restriction(boolean matched, String fieldName, String type, List<? extends Object> values) {
-		this(fieldName, type, values);
+	public Restriction(boolean matched, String type, String fieldName, List<? extends Object> values) {
+		this(type, fieldName, values);
 		this.matched = matched;
 	}
 
-	public Restriction(String fieldName, String type, Object... values) {
-		this(fieldName, type);
+	public Restriction(String type, String fieldName, Object... values) {
+		this(type, fieldName);
 		this.values.addAll(Arrays.asList(values));
 	}
 
-	public Restriction(boolean matched, String fieldName, String type, Object... values) {
-		this(fieldName, type, values);
-		this.matched = matched;
-	}
-
-	// order 使用
-	public Restriction(String type, String... fieldNames) {
-		this.fieldNames.addAll(Arrays.asList(fieldNames));
-		this.type = type.toLowerCase();
-	}
-
-	public Restriction(boolean matched, String type, String... fieldNames) {
-		this(type, fieldNames);
+	public Restriction(boolean matched, String type, String fieldName, Object... values) {
+		this(type, fieldName, values);
 		this.matched = matched;
 	}
 
 	public static Restriction le(String fieldName, Object value) {
-		return new Restriction(fieldName, LE, value);
+		return new Restriction(LE, fieldName, value);
 	}
 
 	public static Restriction le(boolean matched, String fieldName, Object value) {
-		return new Restriction(matched, fieldName, LE, value);
+		return new Restriction(matched, LE, fieldName, value);
 	}
 
 	public static Restriction ge(String fieldName, Object value) {
-		return new Restriction(fieldName, GE, value);
+		return new Restriction(GE, fieldName, value);
 	}
 
 	public static Restriction ge(boolean matched, String fieldName, Object value) {
-		return new Restriction(matched, fieldName, GE, value);
+		return new Restriction(matched, GE, fieldName, value);
 	}
 
 	public static Restriction eq(String fieldName, Object value) {
@@ -134,31 +121,31 @@ public class Restriction {
 	}
 
 	public static Restriction eq(boolean matched, String fieldName, Object value) {
-		return new Restriction(matched, fieldName, EQ, value);
+		return new Restriction(matched, EQ, fieldName, value);
 	}
 
 	public static Restriction notEq(String fieldName, Object value) {
-		return new Restriction(fieldName, NOT_EQ, value);
+		return new Restriction(NOT_EQ, fieldName, value);
 	}
 
 	public static Restriction notEq(boolean matched, String fieldName, Object value) {
-		return new Restriction(matched, fieldName, NOT_EQ, value);
+		return new Restriction(matched, NOT_EQ, fieldName, value);
 	}
 
 	public static Restriction lt(String fieldName, Object value) {
-		return new Restriction(fieldName, LT, value);
+		return new Restriction(LT, fieldName, value);
 	}
 
 	public static Restriction lt(boolean matched, String fieldName, Object value) {
-		return new Restriction(matched, fieldName, LT, value);
+		return new Restriction(matched, LT, fieldName, value);
 	}
 
 	public static Restriction gt(String fieldName, Object value) {
-		return new Restriction(fieldName, GT, value);
+		return new Restriction(GT, fieldName, value);
 	}
 
 	public static Restriction gt(boolean matched, String fieldName, Object value) {
-		return new Restriction(matched, fieldName, GT, value);
+		return new Restriction(matched, GT, fieldName, value);
 	}
 
 	public static Restriction likeBefore(String fieldName, Object value) {
@@ -169,7 +156,7 @@ public class Restriction {
 		if (value == null || "".equals(String.valueOf(value))) {
 			return null;
 		}
-		return new Restriction(matched, fieldName, LIKE, "%" + value);
+		return new Restriction(matched, LIKE, fieldName, "%" + value);
 	}
 
 	public static Restriction likeAfter(String fieldName, Object value) {
@@ -180,7 +167,7 @@ public class Restriction {
 		if (value == null || "".equals(String.valueOf(value))) {
 			return null;
 		}
-		return new Restriction(matched, fieldName, LIKE, value + "%");
+		return new Restriction(matched, LIKE, fieldName, value + "%");
 	}
 
 	public static Restriction like(String fieldName, Object value) {
@@ -191,15 +178,15 @@ public class Restriction {
 		if (value == null || "".equals(String.valueOf(value))) {
 			return null;
 		}
-		return new Restriction(matched, fieldName, LIKE, "%" + value + "%");
+		return new Restriction(matched, LIKE, fieldName, "%" + value + "%");
 	}
 
 	public static Restriction notLike(String fieldName, Object value) {
-		return new Restriction(fieldName, NOT_LIKE, value);
+		return new Restriction(NOT_LIKE, fieldName, value);
 	}
 
 	public static Restriction notLike(boolean matched, String fieldName, Object value) {
-		return new Restriction(matched, fieldName, NOT_LIKE, value);
+		return new Restriction(matched, NOT_LIKE, fieldName, value);
 	}
 
 	public static Restriction between(String fieldName, Object value1, Object value2) {
@@ -207,70 +194,70 @@ public class Restriction {
 	}
 
 	public static Restriction between(boolean matched, String fieldName, Object value1, Object value2) {
-		return new Restriction(matched, fieldName, BETWEEN, Arrays.asList(value1, value2));
+		return new Restriction(matched, BETWEEN, fieldName, Arrays.asList(value1, value2));
 	}
 
 	public static Restriction in(String fieldName, Object... values) {
-		return new Restriction(fieldName, IN, Arrays.asList(values));
+		return new Restriction(IN, fieldName, Arrays.asList(values));
 	}
 
 	public static Restriction in(boolean matched, String fieldName, Object... values) {
-		return new Restriction(matched, fieldName, IN, Arrays.asList(values));
+		return new Restriction(matched, IN, fieldName, Arrays.asList(values));
 	}
 
 	public static Restriction in(String fieldName, List<? extends Object> values) {
-		return new Restriction(fieldName, IN, values);
+		return new Restriction(IN, fieldName, values);
 	}
 
 	public static Restriction in(boolean matched, String fieldName, List<? extends Object> values) {
-		return new Restriction(matched, fieldName, IN, values);
+		return new Restriction(matched, IN, fieldName, values);
 	}
 
 	public static Restriction notIn(String fieldName, Object... values) {
-		return new Restriction(fieldName, NOT_IN, Arrays.asList(values));
+		return new Restriction(NOT_IN, fieldName, Arrays.asList(values));
 	}
 
 	public static Restriction notIn(boolean matched, String fieldName, Object... values) {
-		return new Restriction(matched, fieldName, NOT_IN, Arrays.asList(values));
+		return new Restriction(matched, NOT_IN, fieldName, Arrays.asList(values));
 	}
 
 	public static Restriction notIn(String fieldName, List<Object> values) {
-		return new Restriction(fieldName, NOT_IN, values);
+		return new Restriction(NOT_IN, fieldName, values);
 	}
 
 	public static Restriction notIn(boolean matched, String fieldName, List<Object> values) {
-		return new Restriction(matched, fieldName, NOT_IN, values);
+		return new Restriction(matched, NOT_IN, fieldName, values);
 	}
 
 	public static Restriction isNull(String fieldName) {
-		return new Restriction(fieldName, IS_NULL);
+		return new Restriction(IS_NULL, fieldName);
 	}
 
 	public static Restriction isNull(boolean matched, String fieldName) {
-		return new Restriction(matched, fieldName, IS_NULL);
+		return new Restriction(matched, IS_NULL, fieldName);
 	}
 
 	public static Restriction isNotNull(String fieldName) {
-		return new Restriction(fieldName, IS_NOT_NULL);
+		return new Restriction(IS_NOT_NULL, fieldName);
 	}
 
 	public static Restriction isNotNull(boolean matched, String fieldName) {
-		return new Restriction(matched, fieldName, IS_NOT_NULL);
+		return new Restriction(matched, IS_NOT_NULL, fieldName);
 	}
 
-	public static Restriction orderByAsc(String... fieldNames) {
+	public static Restriction orderByAsc(String fieldNames) {
 		return new Restriction(ORDER_ASC, fieldNames);
 	}
 
-	public static Restriction orderByAsc(boolean matched, String... fieldNames) {
+	public static Restriction orderByAsc(boolean matched, String fieldNames) {
 		return new Restriction(matched, ORDER_ASC, fieldNames);
 	}
 
-	public static Restriction orderByDesc(String... fieldNames) {
+	public static Restriction orderByDesc(String fieldNames) {
 		return new Restriction(ORDER_DESC, fieldNames);
 	}
 
-	public static Restriction orderByDesc(boolean matched, String... fieldNames) {
+	public static Restriction orderByDesc(boolean matched, String fieldNames) {
 		return new Restriction(matched, ORDER_DESC, fieldNames);
 	}
 
@@ -278,7 +265,6 @@ public class Restriction {
 		Restriction r = new Restriction();
 		r.boundSymbol = "or";
 		r.fieldName = restriction.fieldName;
-		r.fieldNames = restriction.fieldNames;
 		r.type = restriction.type;
 		r.value = restriction.value;
 		r.values = restriction.values;
@@ -317,7 +303,7 @@ public class Restriction {
 	}
 	private String buildStringOfOrder() {
 		StringBuilder sb = new StringBuilder("order by ");
-		sb.append(join(fieldNames, ", ")).append(" ").append(type).append(" ");
+		sb.append(fieldName).append(" ").append(type).append(" ");
 		return sb.toString();
 	}
 	private String buildStringOfNull() {
@@ -383,9 +369,9 @@ public class Restriction {
 			Restriction restriction = orderRestrictions.get(i);
 			if (i == 0) {
 				sb.append("order by ");
-				sb.append(join(restriction.fieldNames, ", ")).append(" ").append(restriction.type).append(" ");
+				sb.append(restriction.fieldName).append(" ").append(restriction.type).append(" ");
 			} else {
-				sb.append(", ").append(join(restriction.fieldNames, ", ")).append(" ").append(restriction.type).append(" ");
+				sb.append(", ").append(restriction.fieldName).append(" ").append(restriction.type).append(" ");
 			}
 		}
 		return sb.toString();

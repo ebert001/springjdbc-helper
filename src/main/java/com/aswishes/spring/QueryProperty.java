@@ -11,7 +11,8 @@ import org.apache.commons.beanutils.ConvertUtils;
  * Format: 
  * Q-S-LIKE-username
  * Q-L-IN-id
- * 
+ * Q-OA-id
+ * Q-OD-username
  * @author lizhou
  */
 public class QueryProperty {
@@ -23,7 +24,9 @@ public class QueryProperty {
 
 	/** 比较类型. */
 	public enum MatchType {
-		EQ("="), LIKE("like"), IN("in"), NI("not in"), LT("<"), GT(">"), LE("<="), GE(">=");
+		IN("in"), NI("not in"), LIKE("like"),  
+		EQ("="), LT("<"), GT(">"), LE("<="), GE(">="), 
+		OA("ASC"), OD("DESC");
 		private String name;
 		private MatchType(String name) {
 			this.name = name;
@@ -64,8 +67,17 @@ public class QueryProperty {
 		}
 	}
 	
+	/**
+	 * @param name OA-id, OD-name
+	 */
+	public QueryProperty(String name) {
+		String[] ss = name.split("-", 2);
+		matchType = Enum.valueOf(MatchType.class, ss[0]);
+		propertyName = ss[1];
+	}
+	
 	public Restriction toRestriction() {
-		return new Restriction(propertyName, matchType.getName(), propertyValue);
+		return new Restriction(matchType.getName(), propertyName, propertyValue);
 	}
 
 	public static List<QueryProperty> toQueryProperty(Map<String, String> param, String prefix) {
@@ -83,7 +95,11 @@ public class QueryProperty {
 				continue;
 			}
 			String pname = name.substring(name.indexOf("-") + 1);
-			list.add(new QueryProperty(pname, value));
+			if (pname.startsWith("O")) {
+				list.add(new QueryProperty(pname));
+			} else {
+				list.add(new QueryProperty(pname, value));
+			}
 		}
 		return list;
 	}
